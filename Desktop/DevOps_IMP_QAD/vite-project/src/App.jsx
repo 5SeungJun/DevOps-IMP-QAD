@@ -7,6 +7,7 @@ function App() {
     <>
     <Header/>
     <MyChart/>
+    <p>test</p>
     </>
   )
 }

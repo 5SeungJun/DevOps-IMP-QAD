@@ -1,0 +1,31 @@
+.bug{
+    margin-left : 35px;
+    border: 2px solid black;
+    padding: 70px;
+}
+.seq{
+    margin-left : 40px;
+    border: 2px solid black;
+    padding: 70px;
+}
+.codeSmell{
+    margin-left : 40px;
+    border: 2px solid black;
+    padding: 75px;
+
+}
+.coverage{
+    margin-left : 40px;
+    border: 2px solid black;
+    padding: 70px;
+}
+.score{
+    display:flex;
+    justify-content:center;
+}
+
+.issue{
+    margin-top: 25px;
+    display:flex;
+    flex-direction:row;
+}

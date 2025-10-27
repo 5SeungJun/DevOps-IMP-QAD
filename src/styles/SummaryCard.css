@@ -1,0 +1,46 @@
+.summary-card {
+  flex: 1 1 18%;
+  min-width: 180px;
+  border-bottom: 4px solid;
+  border-radius: 12px;
+  padding: 1rem;
+  background-color: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.summary-card.clickable {
+  cursor: pointer;
+}
+
+.summary-card.clickable:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.summary-card.inactive {
+  opacity: 0.6;
+  background-color: #f9fafb;
+}
+
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary-title {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.summary-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.summary-value {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}

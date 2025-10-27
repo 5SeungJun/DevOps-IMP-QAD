@@ -1,0 +1,65 @@
+.header-root {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 10px;
+  /* border-radius: 8px; */
+  background: linear-gradient(90deg,#ffffff,#fbfbff);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-mark {
+  font-weight: 700;
+  color: #5e35b1;
+  font-size: 18px;
+}
+
+.logo-text {
+  font-weight: 700;
+  color: #111827;
+  font-size: 18px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.project-select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.apply-btn {
+  padding: 7px 10px;
+  border-radius: 6px;
+  background: #5e35b1;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.recent-wrap {
+  padding: 6px 10px;
+  background: #f8fafc;
+  border-radius: 6px;
+  text-align: left;
+}
+
+.recent-label { color: #6b7280; font-size: 12px; }
+.recent-date { font-weight: 600; color: #111827; margin-top: 2px;}

@@ -5,11 +5,39 @@
   flex-direction: column;
 }
 
+.dashboard-charts-row {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+  margin-bottom: 8px; /* 차트 아래 간격을 줄임 */
+}
+
+.dashboard-charts-row > * {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 220px;
+  box-sizing: border-box;
+}
+
+.repository-select-row {
+  width: 100%;
+  padding-top: 8rem; /* 차트와 메인 영역 사이 여백 */
+  display: flex;
+  justify-content: flex-start;
+}
+
 .dashboard-main {
   flex: 1;
   display: flex;
   flex-direction: column;
   padding: 1rem 2rem;
+  padding-top: 1rem;
   gap: 1.5rem;
-  overflow: auto;
+  overflow-y: auto;
+}
+
+/* ChartComponent 높이는 충분히 확보(변경 가능) */
+.dashboard-main > .chart-component {
+  min-height: 280px;
+  flex-shrink: 0;
 }

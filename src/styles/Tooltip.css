@@ -1,0 +1,21 @@
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-box {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 1000;
+  opacity: 0.9;
+}

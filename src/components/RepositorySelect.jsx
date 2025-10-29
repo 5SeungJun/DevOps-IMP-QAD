@@ -1,19 +1,18 @@
 import {useState, useEffect} from 'react';
 import api from "../api/axiosInstance.js";
 
-const RepositorySelect = ({selectedProject, onSelectRepository}) => {
+// 🚨 selectedRepo를 prop으로 받음
+const RepositorySelect = ({selectedProject, onSelectRepository, selectedRepo, dropdownRepoValue, setDropdownRepoValue, handleSelectRepo}) => {
     const [repositories, setRepositories] = useState([]);
-    const [selectedRepo, setSelectedRepo] = useState("");
 
     useEffect(()=>{
         if(!selectedProject) return;
         
-        // 🚨 수정된 부분: projectNoForApi 변수를 만들어 콜론 이전 부분만 사용
         const projectNoForApi = selectedProject.split(':')[0];
         
         const fetchRepos = async() =>{
             try{
-                // 경로: DashBoard.jsx의 성공 경로 구조인 '/portal/pt/'를 따름
+                // 성공한 최종 경로를 반영합니다.
                 const res = await api.get(`/portal/tool/toolLink/getSrchOption`, {
                     params: {
                         projectNo: projectNoForApi // 정제된 프로젝트 번호 사용
@@ -25,46 +24,65 @@ const RepositorySelect = ({selectedProject, onSelectRepository}) => {
                                  ? res.data 
                                  : Array.isArray(res.data?.list) ? res.data.list : [];
                 
-                console.log("레포지토리 API 응답 전체:", res.data); 
-                console.log("추출된 레포지토리 목록:", repoList); 
-
                 if(repoList.length > 0){
                     setRepositories(repoList);
                     
                     const initialRepoName = repoList[0]?.repositoryName || "";
-                    setSelectedRepo(initialRepoName);
-
-                    if(initialRepoName){
-                        onSelectRepository(initialRepoName);
-                    }
+                    
+                    // 초기 로딩 시: 부모의 확정 상태와 임시 상태를 모두 초기값으로 설정
+                    onSelectRepository(initialRepoName); 
+                    setDropdownRepoValue(initialRepoName);
                 } else {
                     setRepositories([]);
-                    setSelectedRepo("");
                     onSelectRepository("");
+                    setDropdownRepoValue("");
                 }
             } catch(err){
                 console.error("레포지토리 목록 불러오기 실패:", err); 
             }
         };
         fetchRepos();
-    }, [selectedProject, onSelectRepository]);
+        
+        // selectedProject가 변경될 때, 임시 드롭다운 값을 초기화
+        return () => {
+            setDropdownRepoValue("");
+        };
+        
+    // 🚨 의존성 배열에서 onSelectRepository를 제거하여 루프 방지 (DashBoard에서 memoization 했지만, 여기서는 제거하여 안정성 확보)
+    }, [selectedProject, setDropdownRepoValue]); 
 
-    const handleSelect = (e) =>{
+    // selectedRepo가 변경될 때마다 dropdownRepoValue를 동기화하여 드롭다운 고정 문제 해결
+    useEffect(() => {
+        // 부모의 확정 상태(selectedRepo)가 변경되면, 임시값도 그 값으로 즉시 동기화합니다.
+        if (selectedRepo !== dropdownRepoValue) {
+            setDropdownRepoValue(selectedRepo);
+        }
+    }, [selectedRepo, setDropdownRepoValue]);
+
+
+    const handleDropdownChange = (e) =>{
         const repoName = e.target.value;
-        setSelectedRepo(repoName);
-        onSelectRepository(repoName);
+        // 드롭다운 변경 시: 확정 상태 대신 임시 상태만 업데이트
+        setDropdownRepoValue(repoName);
     };
 
     return (
         <div className="repo-selector">
             <label>레포지토리</label>
-            <select value={selectedRepo} onChange={handleSelect}>
+            <select 
+                value={dropdownRepoValue} // 임시 상태를 드롭다운 값으로 사용
+                onChange={handleDropdownChange}
+            >
                 {repositories.map((repo) => (
                     <option key={repo.repositoryNo} value={repo.repositoryName}>
                         {repo.repositoryName}
                     </option>
                 ))}
             </select>
+            {/* 적용 버튼 추가 */}
+            <button className="apply-btn" onClick={handleSelectRepo} disabled={dropdownRepoValue === selectedRepo}>
+                적용
+            </button>
         </div>
     )
 }

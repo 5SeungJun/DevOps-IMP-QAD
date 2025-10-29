@@ -18,6 +18,7 @@ const IssueTab = ({ summaryData, lineVisibility, toggleLine, chartKeyMap }) => {
   return (
     <div className="issue-tab-container">
       {summaryKeys.map((key) => (
+        // SummaryCard 컴포넌트는 외부에서 정의되어 있다고 가정합니다.
         <SummaryCard
           key={key}
           title={chartKeyMap[key]}

@@ -3,12 +3,13 @@ import Header from "./Header";
 import ChartComponent from "./ChartComponent";
 import IssueTab from "./IssueTab";
 import RepositorySelect from "./RepositorySelect"
+import TestStatusChart from "./TestStatusChart"; // 🚨 새 컴포넌트 임포트
 import {
   projectKeys,
   chartKeyMap,
   chartColors,
 } from "../data/constants";
-import "../styles/Dashboard.css";
+import "../styles/Dashboard.css"; // CSS 파일에 레이아웃 수정이 필요합니다.
 import api from "../api/axiosInstance.js";
 import { useEffect } from "react";
 
@@ -23,10 +24,39 @@ const DashBoard = () => {
   const [dropdownRepoValue, setDropdownRepoValue] = useState(""); 
   
   const [chartData, setChartData] = useState([]); //선택된 레포지토리의 분석 데이터
-  
-  // 🚨 차트 데이터 로딩 useEffect (POST 요청 및 클라이언트 필터링)
+  // 🚨 추가된 상태: 레포지토리별 테스트 현황 데이터
+  const [testStatusData, setTestStatusData] = useState([]); 
+
+  // 🚨 새 useEffect: 레포지토리별 테스트 현황 데이터 로딩
+  useEffect(() => {
+    if (!selectedProject) return;
+
+    const projectNoForApi = selectedProject.split(':')[0];
+
+    const fetchTestStatus = async () => {
+      try {
+        // API 호출: 테스트 현황은 GET 요청 및 쿼리 파라미터 사용
+        const res = await api.get(`/qms/dashboard/ci/getRepositoryTestStatus`, {
+          params: {
+            project_no: projectNoForApi,
+          },
+        });
+
+        const rawList = Array.isArray(res.data?.list) ? res.data.list : [];
+        setTestStatusData(rawList);
+      } catch (err) {
+        console.error("테스트 현황 데이터 불러오기 실패:", err);
+        setTestStatusData([]);
+      }
+    };
+    fetchTestStatus();
+    // selectedRepo와 무관하게, 프로젝트가 바뀌면 전체 테스트 현황을 다시 가져옵니다.
+  }, [selectedProject]);
+
+
+  // 기존 차트 데이터 로딩 useEffect
   useEffect(()=>{
-    if(!selectedProject || !selectedRepo) return; //프로젝트, 레포지토리가 선택되지 않았으면 return
+    if(!selectedProject || !selectedRepo) return; 
     
     // selectedProject에서 콜론 앞부분만 추출 (예: "demo:1" -> "demo")
     const projectNoForApi = selectedProject.split(':')[0];
@@ -138,7 +168,7 @@ const DashBoard = () => {
   const handleSelectProject = useCallback(() => {
     console.log("적용 버튼 토글");
     setSelectedProject(dropdownValue);
-    // 🚨 핵심 수정: 프로젝트 변경 시 chartData를 빈 배열로 초기화
+    // 🚨 프로젝트 변경 시 chartData를 빈 배열로 초기화
     setChartData([]); 
     setSelectedRepo(""); //레포지토리 목록 초기화
     setDropdownRepoValue(""); // 레포지토리 임시값 초기화
@@ -175,6 +205,12 @@ const DashBoard = () => {
         projectKeys={projectKeys}
         projectsData={projectsData}
       />
+      
+      {/* 🚨 메인 컨텐츠 영역: 차트들을 유연하게 배치 */}
+      <div className="dashboard-charts-row">
+        <TestStatusChart data={testStatusData} /> 
+      </div>
+      
       <RepositorySelect
         selectedProject={selectedProject}
         selectedRepo={selectedRepo}

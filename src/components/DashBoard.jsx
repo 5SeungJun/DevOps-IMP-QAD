@@ -22,10 +22,12 @@ const DashBoard = () => {
 
   const [selectedRepo, setSelectedRepo] = useState(""); //선택된 레포지토리
   const [chartData, setChartData] = useState([]); //선택된 레포지토리의 분석 데이터
+  
   useEffect(()=>{
     if(!selectedProject || !selectedRepo) return; //프로젝트, 레포지토리가 선택되지 않았으면 return
     const fetchRepoAnalysis = async()=>{
       try{
+        // 레포지토리 분석 API는 project_no를 사용하는 것으로 추정하여 유지
         const res = await api.get(`/portal/pt/getSourceQualityCi`, {params : {project_no: selectedProject, repository_name: selectedRepo},});
         //데이터 형식에 맞게 변환.
         const data = res.data?.list?.map((item) =>({
@@ -51,7 +53,7 @@ const DashBoard = () => {
         const meResponse = await api.get("/portal/me");
         setMeData(meResponse.data);
 
-        // /portal/pt/myprojects 호출
+        // /portal/pt/myprojects 호출 (경로 수정 완료)
         const params = new URLSearchParams({
           systemRole: "SVCMGR",
           serviceRole: "",
@@ -60,19 +62,20 @@ const DashBoard = () => {
           sp_uid: "20250527220054578551",
         });
 
+        // 프로젝트 목록 API 경로 수정 (1차 해결)
         const projectsResponse = await api.get(
-          `/pt/myprojects?${params}`
+          `/portal/pt/myprojects?${params}` 
         );
-        setProjectsData(projectsResponse.data);
+        console.log("프로젝트 전체 응답:", projectsResponse.data);
+        
+        // 응답 데이터 구조 보강 (res.data.list 또는 res.data)
+        const projects = Array.isArray(projectsResponse.data?.list) 
+                          ? projectsResponse.data.list 
+                          : Array.isArray(projectsResponse.data) ? projectsResponse.data : [];
 
-        if (
-          projectsResponse.data?.list &&
-          projectsResponse.data.list.length > 0
-        ) {
-          const projects = projectsResponse.data.list;
-          setProjectsData(projects);
-
-          // ✅ 첫 번째 프로젝트를 기본값으로 설정
+        setProjectsData(projects);
+        
+        if(projects.length > 0){
           const firstProjectNo = projects[0].project_no;
           setSelectedProject(firstProjectNo);
           setDropdownValue(firstProjectNo);
@@ -128,7 +131,7 @@ const DashBoard = () => {
       [key]: !prev[key],
     }));
   }, []);
-
+  
   return (
     <div className="dashboard-container">
       <Header
@@ -162,4 +165,3 @@ const DashBoard = () => {
 };
 
 export default DashBoard;
-

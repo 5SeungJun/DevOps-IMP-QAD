@@ -9,7 +9,9 @@ const Header = ({
   testDate,
   projectsData,
 }) => {
+  console.log("프로젝트 데이터:", projectsData);
   return (
+    
     <header className="header-root">
       <div className="header-left">
         <div className="logo-mark">

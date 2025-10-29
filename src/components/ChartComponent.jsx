@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   LineChart,
   Line,
@@ -8,20 +8,20 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from 'recharts';
+} from "recharts";
 
 const ChartComponent = ({ chartData, lineVisibility, chartKeyMap }) => {
   // 색상 지정 (한글 라벨 기준)
   const colors = {
-    '보안 취약점': '#f44336',
-    '보안 경고': '#ff9800',
-    '오류': '#9c27b0',
-    '개선 권장': '#2196f3',
-    '복잡도': '#4caf50',
+    "보안 취약점": "#f44336",
+    "보안 경고": "#ff9800",
+    오류: "#9c27b0",
+    "개선 권장": "#2196f3",
+    복잡도: "#4caf50",
   };
 
   return (
-    <div style={{ width: '100%', height: '100%' }}>
+    <div style={{ width: "100%", height: "100%" }}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={chartData}

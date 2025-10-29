@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles/SummaryCard.css";
 
-const SummaryCard = ({ title, value, color, icon: icon, onClick, isActive, isToggle, chartKey }) => {
+const SummaryCard = ({ title, value, color, icon: Icon, onClick, isActive, isToggle, chartKey }) => {
   const cardClasses = `summary-card ${isActive ? "active" : "inactive"} ${
     isToggle ? "clickable" : ""
   }`;
@@ -16,7 +16,7 @@ const SummaryCard = ({ title, value, color, icon: icon, onClick, isActive, isTog
     >
       <div className="summary-header">
         <h4 className="summary-title">{title}</h4>
-        <icon className="summary-icon" style={{ color: displayColor }} />
+        <Icon className="summary-icon" style={{ color: displayColor }} />
       </div>
       <p className="summary-value" style={{ color: displayColor }}>
         {value}

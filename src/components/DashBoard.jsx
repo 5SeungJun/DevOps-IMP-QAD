@@ -2,12 +2,88 @@ import React, { useState, useMemo, useCallback } from "react";
 import Header from "./Header";
 import ChartComponent from "./ChartComponent";
 import IssueTab from "./IssueTab";
-import { projectData, projectKeys, chartKeyMap, chartColors } from "../data/constants";
+import RepositorySelect from "./RepositorySelect"
+import {
+  projectData,
+  projectKeys,
+  chartKeyMap,
+  chartColors,
+} from "../data/constants";
 import "../styles/Dashboard.css";
+import api from "../api/axiosInstance.js";
+import { useEffect } from "react";
 
 const DashBoard = () => {
-  const [selectedProject, setSelectedProject] = useState(projectKeys[0]);
-  const [dropdownValue, setDropdownValue] = useState(projectKeys[0]);
+  const [selectedProject, setSelectedProject] = useState(projectKeys[0]); //선택된 프로젝트 
+  const [dropdownValue, setDropdownValue] = useState(projectKeys[0]); // 프로젝트 목록
+
+  const [meData, setMeData] = useState(null);
+  const [projectsData, setProjectsData] = useState([]);
+
+  const [selectedRepo, setSelectedRepo] = useState(""); //선택된 레포지토리
+  const [chartData, setChartData] = useState([]); //선택된 레포지토리의 분석 데이터
+  useEffect(()=>{
+    if(!selectedProject || !selectedRepo) return; //프로젝트, 레포지토리가 선택되지 않았으면 return
+    const fetchRepoAnalysis = async()=>{
+      try{
+        const res = await api.get(`/portal/pt/getSourceQualityCi`, {params : {project_no: selectedProject, repository_name: selectedRepo},});
+        //데이터 형식에 맞게 변환.
+        const data = res.data?.list?.map((item) =>({
+          name: item.source_code,
+          보안취약점: item.vulner,
+          보안경고: item.security,
+          오류: item.bug,
+          개선권장: item.smell,
+          복잡도: item.complexity,
+        }));
+        setChartData(data || []); //차트 데이터 가져오기
+      }catch(err){
+        console.error("분석 결과 불러오기 실패:", err);
+      }
+    };
+    fetchRepoAnalysis();
+  }, [selectedProject, selectedRepo]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // /portal/me 호출
+        const meResponse = await api.get("/portal/me");
+        setMeData(meResponse.data);
+
+        // /portal/pt/myprojects 호출
+        const params = new URLSearchParams({
+          systemRole: "SVCMGR",
+          serviceRole: "",
+          group_code: "SVCMGR",
+          user_id: "demo_admin",
+          sp_uid: "20250527220054578551",
+        });
+
+        const projectsResponse = await api.get(
+          `/pt/myprojects?${params}`
+        );
+        setProjectsData(projectsResponse.data);
+
+        if (
+          projectsResponse.data?.list &&
+          projectsResponse.data.list.length > 0
+        ) {
+          const projects = projectsResponse.data.list;
+          setProjectsData(projects);
+
+          // ✅ 첫 번째 프로젝트를 기본값으로 설정
+          const firstProjectNo = projects[0].project_no;
+          setSelectedProject(firstProjectNo);
+          setDropdownValue(firstProjectNo);
+        }
+      } catch (error) {
+        console.error("API 호출 오류:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const initialLineVisibility = useMemo(() => {
     return Object.values(chartKeyMap).reduce((acc, key) => {
@@ -18,10 +94,31 @@ const DashBoard = () => {
 
   const [lineVisibility, setLineVisibility] = useState(initialLineVisibility);
 
-  const currentData = useMemo(() => projectData[selectedProject], [selectedProject]);
+  const currentData = useMemo(() => {
+    const data = projectData[selectedProject];
+
+    // 데이터가 없으면 기본값 반환
+    if (!data) {
+      return {
+        chartData: [],
+        summary: {
+          vulner: 0,
+          security: 0,
+          bug: 0,
+          smell: 0,
+          complexity: 0,
+          total: 0,
+        },
+      };
+    }
+
+    return data;
+  }, [selectedProject]);
 
   const handleSelectProject = useCallback(() => {
+    console.log("적용 버튼 토글");
     setSelectedProject(dropdownValue);
+    setSelectedRepo(""); //프로젝트 변경 시, 레포지토리 목록 초기화
     setLineVisibility(initialLineVisibility);
   }, [dropdownValue, initialLineVisibility]);
 
@@ -38,12 +135,17 @@ const DashBoard = () => {
         dropdownValue={dropdownValue}
         setDropdownValue={setDropdownValue}
         handleSelectProject={handleSelectProject}
-        testDate={currentData.testDate}
+        testDate={meData?.lastResponseDate}
         projectKeys={projectKeys}
+        projectsData={projectsData}
+      />
+      <RepositorySelect
+        selectedProject={selectedProject}
+        onSelectRepository={(repoName=>setSelectedRepo(repoName))}
       />
       <main className="dashboard-main">
         <ChartComponent
-          chartData={currentData.chartData}
+          chartData={chartData}
           lineVisibility={lineVisibility}
           chartKeyMap={chartKeyMap}
           chartColors={chartColors}
@@ -60,3 +162,4 @@ const DashBoard = () => {
 };
 
 export default DashBoard;
+

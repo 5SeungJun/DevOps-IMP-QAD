@@ -5,8 +5,8 @@
   gap: 16px;
   padding: 10px;
   /* border-radius: 8px; */
-  background: linear-gradient(90deg,#ffffff,#fbfbff);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  background: linear-gradient(90deg, #ffffff, #fbfbff);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
 }
 
 .header-left {
@@ -15,16 +15,9 @@
   gap: 10px;
 }
 
-.logo-mark {
-  font-weight: 700;
-  color: #5e35b1;
-  font-size: 18px;
-}
-
-.logo-text {
-  font-weight: 700;
-  color: #111827;
-  font-size: 18px;
+.logo-mark img {
+  width: 80px;
+  height: auto;
 }
 
 .header-right {
@@ -61,5 +54,12 @@
   text-align: left;
 }
 
-.recent-label { color: #6b7280; font-size: 12px; }
-.recent-date { font-weight: 600; color: #111827; margin-top: 2px;}
+.recent-label {
+  color: #6b7280;
+  font-size: 12px;
+}
+.recent-date {
+  font-weight: 600;
+  color: #111827;
+  margin-top: 2px;
+}

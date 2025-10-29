@@ -1,0 +1,5 @@
+html, body, #root {
+  height: 100%;   /* 루트 컨테이너 높이를 100%로 */
+  margin: 0;      /* 기본 여백 제거 */
+  padding: 0;
+}

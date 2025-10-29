@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import api from "../api/axiosInstance.js";
 
-// 🚨 selectedRepo를 prop으로 받음
+// selectedRepo를 prop으로 받음
 const RepositorySelect = ({selectedProject, onSelectRepository, selectedRepo, dropdownRepoValue, setDropdownRepoValue, handleSelectRepo}) => {
     const [repositories, setRepositories] = useState([]);
 
@@ -48,8 +48,7 @@ const RepositorySelect = ({selectedProject, onSelectRepository, selectedRepo, dr
             setDropdownRepoValue("");
         };
         
-    // 🚨 의존성 배열에서 onSelectRepository를 제거하여 루프 방지 (DashBoard에서 memoization 했지만, 여기서는 제거하여 안정성 확보)
-    }, [selectedProject, setDropdownRepoValue]); 
+    }, [selectedProject, onSelectRepository, setDropdownRepoValue]);
 
     // selectedRepo가 변경될 때마다 dropdownRepoValue를 동기화하여 드롭다운 고정 문제 해결
     useEffect(() => {

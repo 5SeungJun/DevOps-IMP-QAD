@@ -9,6 +9,7 @@ const Tooltip = ({ children, text }) => {
       className="tooltip-container"
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(false)}
+      style={{ position: 'relative' }}
     >
       {children}
       {visible && <div className="tooltip-box">{text}</div>}

@@ -1,6 +1,6 @@
 .summary-card {
   flex: 1 1 18%;
-  min-width: 180px;
+  min-width: 50px;
   border-bottom: 4px solid;
   border-radius: 12px;
   padding: 1rem;
@@ -13,10 +13,10 @@
   cursor: pointer;
 }
 
-.summary-card.clickable:hover {
+/* .summary-card.clickable:hover {
   transform: scale(1.03);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+} */
 
 .summary-card.inactive {
   opacity: 0.6;

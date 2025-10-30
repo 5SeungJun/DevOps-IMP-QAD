@@ -6,7 +6,7 @@
 .tooltip-box {
   position: absolute;
   bottom: 100%;
-  left: 50%;
+  left: 0%;
   transform: translateX(-50%);
   margin-bottom: 8px;
   padding: 8px 12px;
@@ -16,6 +16,6 @@
   font-size: 12px;
   pointer-events: none;
   white-space: nowrap;
-  z-index: 1000;
+  z-index: 100;
   opacity: 0.9;
 }
